@@ -1,6 +1,6 @@
 
 
-solution:
+Solution:
 Three resources each accesses mongoDB collection.
 assumptions:
 1) assume there will be schema validation for apis
