@@ -1,0 +1,15 @@
+{
+  server: {
+    name: 'ticketing-system',
+    port: 4002
+  },
+  mongo: {
+    url: 'mongodb://localhost:27017',
+    dbName: 'ticketing',
+    usersCollectionName: 'users',
+    ticketsCollectionName: 'tickets',
+    rolesCollectionName: 'roles',
+    dbDefaultUserName: 'user',
+    dbDefaultUserPassword: 'password'
+  }
+}
