@@ -47,29 +47,30 @@ module.exports = {
             }
             //combine ticket with defaults Ticket
             ticketObj = _.defaultsDeep(ticketObj, defaultsObj);
-            Object.keys(ticketObj).forEach(k => { if (!defaultsObj[k]){delete ticketObj[k]}});
+            Object.keys(ticketObj).forEach(k => {
+                if (defaultsObj[k] == undefined){delete ticketObj[k]}});
 
             const results = {
-                ticketData: ticketObj,
-                roleObj: roleObj
+                ticket: ticketObj,
+                permissions: roleObj
             };
             res.status(200).send(results);
         } catch (e) {
             console.error('error getting Ticket. message', e.message );
-            res.status(e.statusCode || 500).send();
+            res.status(e.statusCode || 500).send(e.message);
         }
     },
     createTicket: async function(req,res) {
         try {
             const ticketId = req.params.ticketId;
             const Ticket = req.body;
-            //TODO validate body with role and default ticket
+            //TODO validate body with role and roles ticket
             Ticket._id = ticketId;
             await storage.insertItem( Ticket , ticketsCollectionName );
             res.status(200).send('Ticket inserted successfuly');
         } catch (e) {
             console.error('error creating Ticket message', e.message );
-            res.status(e.statusCode || 500).send();
+            res.status(e.statusCode || 500).send(e.message);
         }
     },
     updateTicket: async function(req,res) {
@@ -94,18 +95,20 @@ module.exports = {
             res.status(200).send('field added');
         } catch (e) {
             console.error('error creating Ticket message', e.message );
-            res.status(e.statusCode || 500).send();
+            res.status(e.statusCode || 500).send(e.message);
         }
     },
     removeField: async function( req, res ) {
         try {
-            const Ticket = req.body;
-            const results = await storage.deleteFields( "defaultTicket" , Ticket , ticketsCollectionName );
+            let field = {};
+            field[req.params.fieldId] = 1;
+            await storage.deleteFields( "defaultTicket" , field , ticketsCollectionName );
+            await storage.deleteAll( field , rolesCollectionName );
             //optoinal: Todo trigger backround job to delete fields
-            res.status(200).send(results);
+            res.status(200).send('Field deleted');
         } catch (e) {
             console.error('error creating Ticket message', e.message );
-            res.status(e.statusCode || 500).send();
+            res.status(e.statusCode || 500).send(e.message);
         }
     },
 

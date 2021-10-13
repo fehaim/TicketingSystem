@@ -33,6 +33,9 @@ module.exports = {
     updateAll: async ( item, collectionName) => {
         await dbHandle.collection(collectionName).updateMany({}, {$set : item}, {upsert: true});
     },
+    deleteAll: async ( item, collectionName) => {
+        await dbHandle.collection(collectionName).updateMany({}, {$unset : item}, {multi: true});
+    },
     deleteFields: async ( id, item, collectionName) => {
         await dbHandle.collection(collectionName).updateOne({_id: id}, {$unset : item}, {upsert: true});
     },
